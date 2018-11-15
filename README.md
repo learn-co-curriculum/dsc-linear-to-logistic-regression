@@ -1,11 +1,16 @@
 
 # Logistic regression
 
-## 1. Introduction
-
+## Introduction
 In this lecture, you'll be introduced to the logistic regression model. We'll start with an introductory example using linear regression, which you've seen before, to act as a segue into logistic regression. After that, we'll go into more formal notation of logistic regression models. We'll conclude this lecture by looking at a real data example.
 
-## 2. Recap of the linear regression model
+## Objectives
+
+You will be able to:
+* Understand and implement logistic regression
+* Understand and explain the sigmoid function
+
+## Recap of the linear regression model
 
 You have previously learned about linear regression models. In these models, what you try to do is fit a linear relationshio between two variables. An example is given below. In this example, we want to find a relationship between age and monthly income. It is definitely reasonable to assume that, on average, older people have a higher income than younger people who are newer to the job market and have less experience. A potential relationship could look like the plot below. The monthly income is shown in 1000 USD.
 
@@ -47,12 +52,12 @@ plt.show()
 ```
 
 
-![png](index_files/index_7_0.png)
+![png](index_files/index_5_0.png)
 
 
  The idea is that we could use this line to make predictions in the future. In this case, we modeled the general relationship as follows: the extected monthly income for someone who is, say, 40 years old, is 3000 (3 on the y-axis). Of course, the actual income will most likely be different, but this gives us an indication of what we could expect.
 
-## 3. So how is this related to logistic regression?
+## So how is this related to logistic regression?
 
 Now, imagine you get a data set where no information on exact income is given (after all, people don't like to talk about how much they earn!), but you only have information on whether or not thet earn more than 4000 USD per month. Starting from the generated data we used before, the new variable `income_bin` was transformed to 1 when someone's income is over 4000 USD, and 0 when the income is less than 4000 USD.
 
@@ -81,7 +86,7 @@ plt.show()
 ```
 
 
-![png](index_files/index_13_0.png)
+![png](index_files/index_11_0.png)
 
 
 You can already tell that fitting a straight line will not be exactly desired here, but let's still have a look at what happens when we formallty build a regression line to these data. 
@@ -113,7 +118,7 @@ plt.show()
 ```
 
 
-![png](index_files/index_16_0.png)
+![png](index_files/index_14_0.png)
 
 
 You can see that this doesn't make a lot of sense. This straight line cannot grasp the true structure of what is going on when using a linear regression model. Now, without going into the mathematical details for now, let's look at a logistic regression model and fit that to our data.
@@ -161,14 +166,14 @@ plt.show()
 ```
 
 
-![png](index_files/index_20_0.png)
+![png](index_files/index_18_0.png)
 
 
 This already looks a lot better! You can see that this function has an S-shape which plateaus to 0 in the left tale and 1 to the right tale. This is exactly what we needed here. Hopefully this example was a good way of showing why logistic regression is useful. In the next section we'll dive a little deeper into the mathematics of logistic regression models.
 
-## 4. Logistic regression model formulation
+## Logistic regression model formulation
 
-### 4.1 The model
+### The model
 
 As you might remember from the linear regression class, a formally, a linear regression model can be written as:
 
@@ -193,7 +198,7 @@ It is important to note that this is the case because the income variable was re
 
 
 
-### 4.2 Interpretation
+### Interpretation
 
 As mentioned before, the probability of an income over 4000 can be calculated using:
 
@@ -379,3 +384,7 @@ model_log.coef_
              1.2067121 ,  0.03871011]])
 
 
+
+## Summary 
+
+In this lab we built upon our previous knowledge of linear regression and built an intuitive understanding of how this could be adapted for classification. We then demonstrated tools for performing logistic regression and briefly analyzed their output. In the upcoming lessons we will continue to investigate logistic regression from various viewpoints.
