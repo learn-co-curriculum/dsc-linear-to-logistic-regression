@@ -8,7 +8,6 @@ In this lecture, you'll be introduced to the logistic regression model. We'll st
 
 You will be able to:
 * Understand and implement logistic regression
-* Understand and explain the sigmoid function
 
 ## Recap of the linear regression model
 
