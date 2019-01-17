@@ -1,5 +1,5 @@
 
-# Logistic regression
+# Linear to Logistic regression
 
 ## Introduction
 In this lecture, you'll be introduced to the logistic regression model. We'll start with an introductory example using linear regression, which you've seen before, to act as a segue into logistic regression. After that, we'll go into more formal notation of logistic regression models. We'll conclude this lecture by looking at a real data example.
