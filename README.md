@@ -2,16 +2,18 @@
 # Linear to Logistic regression
 
 ## Introduction
-In this lecture, you'll be introduced to the logistic regression model. We'll start with an introductory example using linear regression, which you've seen before, to act as a segue into logistic regression. After that, we'll go into more formal notation of logistic regression models. We'll conclude this lecture by looking at a real data example.
+In this lecture, you'll be introduced to the logistic regression model. You'll start with an introductory example using linear regression, which you've seen before, to act as a segue into logistic regression. After that, you'll go into the more formal notation of logistic regression models. Then, you'll conclude this lecture by looking at a real data example.
 
 ## Objectives
 
 You will be able to:
-* Understand and implement logistic regression
+* Describe the need for logistic regression
+* Describe the mathematics behind logistic regression
+* Interpret the parameters of a logistic regression model
 
 ## Recap of the linear regression model
 
-You have previously learned about linear regression models. In these models, what you try to do is fit a linear relationshio between two variables. An example is given below. In this example, we want to find a relationship between age and monthly income. It is definitely reasonable to assume that, on average, older people have a higher income than younger people who are newer to the job market and have less experience. A potential relationship could look like the plot below. The monthly income is shown in 1000 USD.
+You have previously learned about linear regression models. In these models, you are trying to fit a linear relationship between two variables. An example is given below. In this example, we want to find a relationship between age and monthly income. It is definitely reasonable to assume that, on average, older people have a higher income than younger people who are newer to the job market and have less experience. A potential relationship could look like the plot below. The monthly income is shown in 1000 USD.
 
 
 ```python
@@ -34,10 +36,10 @@ plt.show()
 ```
 
 
-    <matplotlib.figure.Figure at 0x1058d4e80>
+![png](index_files/index_3_0.png)
 
 
-In linear regression, we'd try to find a relationship between age and monthly income. Conceptually, we'd try to fit a line that represents the relationship between age and monthly income, as shown below.
+In linear regression, you would try to find a relationship between age and monthly income. Conceptually, this means fitting a line that represents the relationship between age and monthly income, as shown below.
 
 
 ```python
@@ -54,11 +56,11 @@ plt.show()
 ![png](index_files/index_5_0.png)
 
 
- The idea is that we could use this line to make predictions in the future. In this case, we modeled the general relationship as follows: the extected monthly income for someone who is, say, 40 years old, is 3000 (3 on the y-axis). Of course, the actual income will most likely be different, but this gives us an indication of what we could expect.
+The idea is that you could use this line to make predictions in the future. In this case, the relationship is modeled as follows: the expected monthly income for someone who is, say, 40 years old, is 3000 (3 on the y-axis). Of course, the actual income will most likely be different, but this gives an indication of what the model predicts as the salary value.
 
 ## So how is this related to logistic regression?
 
-Now, imagine you get a data set where no information on exact income is given (after all, people don't like to talk about how much they earn!), but you only have information on whether or not thet earn more than 4000 USD per month. Starting from the generated data we used before, the new variable `income_bin` was transformed to 1 when someone's income is over 4000 USD, and 0 when the income is less than 4000 USD.
+Now, imagine you get a data set where no information on exact income is given (after all, people don't like to talk about how much they earn!), but you only have information on whether or not they earn more than 4000 USD per month. Starting from the generated data we used before, the new variable `income_bin` was transformed to 1 when someone's income is over 4000 USD, and 0 when the income is less than 4000 USD.
 
 
 ```python
@@ -88,7 +90,7 @@ plt.show()
 ![png](index_files/index_11_0.png)
 
 
-You can already tell that fitting a straight line will not be exactly desired here, but let's still have a look at what happens when we formallty build a regression line to these data. 
+You can already tell that fitting a straight line will not be exactly desired here, but let's still have a look at what happens when you fit a regression line to these data. 
 
 
 ```python
@@ -120,7 +122,7 @@ plt.show()
 ![png](index_files/index_14_0.png)
 
 
-You can see that this doesn't make a lot of sense. This straight line cannot grasp the true structure of what is going on when using a linear regression model. Now, without going into the mathematical details for now, let's look at a logistic regression model and fit that to our data.
+You can see that this doesn't make a lot of sense. This straight line cannot grasp the true structure of what is going on when using a linear regression model. Now, without going into the mathematical details for now, let's look at a logistic regression model and fit that to the dataset.
 
 
 ```python
@@ -168,25 +170,25 @@ plt.show()
 ![png](index_files/index_18_0.png)
 
 
-This already looks a lot better! You can see that this function has an S-shape which plateaus to 0 in the left tale and 1 to the right tale. This is exactly what we needed here. Hopefully this example was a good way of showing why logistic regression is useful. In the next section we'll dive a little deeper into the mathematics of logistic regression models.
+This already looks a lot better! You can see that this function has an S-shape which plateaus to 0 in the left tale and 1 to the right tale. This is exactly what we needed here. Hopefully this example was a good way of showing why logistic regression is useful. Now, it's time to dive into the mathematics that make logistic regression possible.
 
 ## Logistic regression model formulation
 
 ### The model
 
-As you might remember from the linear regression class, a formally, a linear regression model can be written as:
+As you might remember from the linear regression lesson, a linear regression model can be written as:
 
 $$ \hat y = \hat\beta_0 + \hat\beta_1 x_1 + \hat\beta_2, x_2 +\ldots + \beta_n x_n $$
 
-when we have $n$ predictors $x_1,\ldots,x_n$ and $n+1$ parameter estimates that are estimated by the model $\hat\beta_0, \hat\beta_1,\ldots, \hat\beta_n$. $ \hat y $ is a estimator for the outcome variable.
+When there are $n$ predictors $x_1,\ldots,x_n$ and $n+1$ parameter estimates that are estimated by the model $\hat\beta_0, \hat\beta_1,\ldots, \hat\beta_n$. $ \hat y $ is an estimator for the outcome variable.
 
 Translating this model formulation to our example, this boils down to:
 
 $$ \text{income} = \beta_0 + \beta_1 \text{age} $$
 
-When you want to apply this to a binary dataset, what you actually want to do is perform a **classification** of your data in one group versus another one. In our case, we want to classify our observations (the 100 people in our data set) as good as possible in "earns more than 4k" and "earns less than 4k". A model will have to make a guess of what the **probability** is of belonging to one group versus another. And that exactly is what logistic regression models can do! 
+When you want to apply this to a binary dataset, what you actually want to do is perform a **classification** of your data in one group versus another one. In our case, we want to classify our observations (the 100 people in our data set) as good as possible in "earns more than 4k" and "earns less than 4k". A model will have to make a guess of what the **probability** is of belonging to one group versus another. And that is exactly what logistic regression models can do! 
 
-essentially, what happens is, the linear regression is *transformed* in a way that the outcome takes a value between 0 and 1. This can then be interpreted as a probability (e.g., 0.2 is a probability of 20%). Applied to our example, the expression for a logistic regression model would look like this:
+Essentially, what happens is, the linear regression is *transformed* in a way that the outcome takes a value between 0 and 1. This can then be interpreted as a probability (e.g., 0.2 is a probability of 20%). Applied to our example, the expression for a logistic regression model would look like this:
 
 $$ P(\text{income} > 4000) = \displaystyle \frac{1}{1+e^{-(\hat \beta_0+\hat \beta_1 \text{age})}}$$
 
@@ -259,10 +261,6 @@ logit_model = sm.Logit(y.iloc[:,1], X)
 result = logit_model.fit()
 ```
 
-    /Users/lore.dirick/anaconda3/lib/python3.6/site-packages/statsmodels/compat/pandas.py:56: FutureWarning: The pandas.core.datetools module is deprecated and will be removed in a future version. Please use the pandas.tseries module instead.
-      from pandas.core import datetools
-
-
     Optimization terminated successfully.
              Current function value: 0.498651
              Iterations 6
@@ -288,10 +286,10 @@ result.summary()
   <th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>  <td>     6</td> 
 </tr>
 <tr>
-  <th>Date:</th>          <td>Wed, 21 Nov 2018</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
+  <th>Date:</th>          <td>Tue, 23 Apr 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>              <td>09:04:19</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>              <td>12:03:37</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
   <th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
@@ -375,11 +373,11 @@ model_log.coef_
 
 
 
-    array([[-4.38706343,  0.96178903,  0.14397984, -0.14384057,  0.83689458,
+    array([[-4.38706343,  0.96178902,  0.14397983, -0.14384057,  0.83689457,
              1.2067121 ,  0.03871011]])
 
 
 
 ## Summary 
 
-In this lab we built upon our previous knowledge of linear regression and built an intuitive understanding of how this could be adapted for classification. We then demonstrated tools for performing logistic regression and briefly analyzed their output. In the upcoming lessons we will continue to investigate logistic regression from various viewpoints.
+In this lab you built upon your previous knowledge of linear regression and built an intuitive understanding of how this could be adapted for classification. We then demonstrated tools for performing logistic regression and briefly analyzed their output. In the upcoming lessons you will continue to investigate logistic regression from other viewpoints.
