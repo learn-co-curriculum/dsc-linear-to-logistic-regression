@@ -239,7 +239,6 @@ import sklearn.preprocessing as preprocessing
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from scipy import stats
-stats.chisqprob = lambda chisq, df: stats.chi2.sf(chisq, df)
 ```
 
 
@@ -289,7 +288,7 @@ result.summary()
   <th>Date:</th>          <td>Tue, 23 Apr 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>              <td>12:03:37</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>              <td>12:19:43</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
   <th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
