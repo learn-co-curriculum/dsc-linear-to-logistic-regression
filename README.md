@@ -36,7 +36,7 @@ plt.show()
 ```
 
 
-![png](index_files/index_3_0.png)
+    <Figure size 800x600 with 1 Axes>
 
 
 In linear regression, you would try to find a relationship between age and monthly income. Conceptually, this means fitting a line that represents the relationship between age and monthly income, as shown below.
@@ -132,13 +132,18 @@ regr = LogisticRegression(C=1e5)
 regr.fit(age, income_bin)
 ```
 
+    /anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+      FutureWarning)
+
+
 
 
 
     LogisticRegression(C=100000.0, class_weight=None, dual=False,
-              fit_intercept=True, intercept_scaling=1, max_iter=100,
-              multi_class='ovr', n_jobs=1, penalty='l2', random_state=None,
-              solver='liblinear', tol=0.0001, verbose=0, warm_start=False)
+                       fit_intercept=True, intercept_scaling=1, l1_ratio=None,
+                       max_iter=100, multi_class='warn', n_jobs=None, penalty='l2',
+                       random_state=None, solver='warn', tol=0.0001, verbose=0,
+                       warm_start=False)
 
 
 
@@ -232,6 +237,8 @@ In our example, there is a positive relationship between age and income, this wi
 
 # A real data example
 
+Now let's apply what we've learned to a real data example. 
+
 
 ```python
 import statsmodels as sm
@@ -244,19 +251,118 @@ from scipy import stats
 
 ```python
 salaries = pd.read_csv("salaries_final.csv", index_col = 0)
+salaries.head()
 ```
 
 
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Education</th>
+      <th>Occupation</th>
+      <th>Relationship</th>
+      <th>Race</th>
+      <th>Sex</th>
+      <th>Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>39</td>
+      <td>Bachelors</td>
+      <td>Adm-clerical</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>&lt;=50K</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>50</td>
+      <td>Bachelors</td>
+      <td>Exec-managerial</td>
+      <td>Husband</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>&lt;=50K</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>38</td>
+      <td>HS-grad</td>
+      <td>Handlers-cleaners</td>
+      <td>Not-in-family</td>
+      <td>White</td>
+      <td>Male</td>
+      <td>&lt;=50K</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>53</td>
+      <td>11th</td>
+      <td>Handlers-cleaners</td>
+      <td>Husband</td>
+      <td>Black</td>
+      <td>Male</td>
+      <td>&lt;=50K</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>28</td>
+      <td>Bachelors</td>
+      <td>Prof-specialty</td>
+      <td>Wife</td>
+      <td>Black</td>
+      <td>Female</td>
+      <td>&lt;=50K</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+For this example, let's fit a logistic regression model to `Target` using `Age`, `Race`, and `Sex`. Since `Target`, `Race`, and `Sex` are categorical, they need to be be converted to a numeric data type first.
+
+
 ```python
-from patsy import dmatrices
-y, X = dmatrices('Target ~ Age  + C(Race) + C(Sex)',
-                  salaries, return_type = "dataframe")
+# Convert race and sex using get_dummies and concatenate with age
+cols = ["Race", "Sex"]
+X = pd.concat([pd.get_dummies(salaries[col], drop_first=True, dtype=float) for col in cols] 
+              + [salaries["Age"]], axis=1)
+
+# Convert target using get dummies
+y = pd.get_dummies(salaries["Target"], dtype=float)
 ```
 
 
 ```python
 import statsmodels.api as sm
+
+# Create intercept term required for sm.Logit, see documentation for more information
+X = sm.add_constant(X)
+# Fit model
 logit_model = sm.Logit(y.iloc[:,1], X)
+# Get results of the fit
 result = logit_model.fit()
 ```
 
@@ -276,7 +382,7 @@ result.summary()
 <table class="simpletable">
 <caption>Logit Regression Results</caption>
 <tr>
-  <th>Dep. Variable:</th>   <td>Target[>50K]</td>   <th>  No. Observations:  </th>  <td> 32561</td> 
+  <th>Dep. Variable:</th>       <td>>50K</td>       <th>  No. Observations:  </th>  <td> 32561</td> 
 </tr>
 <tr>
   <th>Model:</th>               <td>Logit</td>      <th>  Df Residuals:      </th>  <td> 32554</td> 
@@ -285,10 +391,10 @@ result.summary()
   <th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>  <td>     6</td> 
 </tr>
 <tr>
-  <th>Date:</th>          <td>Tue, 23 Apr 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
+  <th>Date:</th>          <td>Wed, 24 Jul 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>              <td>12:19:43</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>              <td>15:20:20</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
   <th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
@@ -299,28 +405,28 @@ result.summary()
 </table>
 <table class="simpletable">
 <tr>
-                <td></td>                   <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P>|z|</th>  <th>[0.025</th>    <th>0.975]</th>  
+           <td></td>             <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P>|z|</th>  <th>[0.025</th>    <th>0.975]</th>  
 </tr>
 <tr>
-  <th>Intercept</th>                     <td>   -4.4248</td> <td>    0.189</td> <td>  -23.380</td> <td> 0.000</td> <td>   -4.796</td> <td>   -4.054</td>
+  <th>const</th>              <td>   -4.4248</td> <td>    0.189</td> <td>  -23.380</td> <td> 0.000</td> <td>   -4.796</td> <td>   -4.054</td>
 </tr>
 <tr>
-  <th>C(Race)[T.Asian-Pac-Islander]</th> <td>    0.9991</td> <td>    0.197</td> <td>    5.079</td> <td> 0.000</td> <td>    0.614</td> <td>    1.385</td>
+  <th>Asian-Pac-Islander</th> <td>    0.9991</td> <td>    0.197</td> <td>    5.079</td> <td> 0.000</td> <td>    0.614</td> <td>    1.385</td>
 </tr>
 <tr>
-  <th>C(Race)[T.Black]</th>              <td>    0.1812</td> <td>    0.191</td> <td>    0.950</td> <td> 0.342</td> <td>   -0.193</td> <td>    0.555</td>
+  <th>Black</th>              <td>    0.1812</td> <td>    0.191</td> <td>    0.950</td> <td> 0.342</td> <td>   -0.193</td> <td>    0.555</td>
 </tr>
 <tr>
-  <th>C(Race)[T.Other]</th>              <td>   -0.1143</td> <td>    0.282</td> <td>   -0.406</td> <td> 0.685</td> <td>   -0.667</td> <td>    0.438</td>
+  <th>Other</th>              <td>   -0.1143</td> <td>    0.282</td> <td>   -0.406</td> <td> 0.685</td> <td>   -0.667</td> <td>    0.438</td>
 </tr>
 <tr>
-  <th>C(Race)[T.White]</th>              <td>    0.8742</td> <td>    0.183</td> <td>    4.782</td> <td> 0.000</td> <td>    0.516</td> <td>    1.232</td>
+  <th>White</th>              <td>    0.8742</td> <td>    0.183</td> <td>    4.782</td> <td> 0.000</td> <td>    0.516</td> <td>    1.232</td>
 </tr>
 <tr>
-  <th>C(Sex)[T.Male]</th>                <td>    1.2069</td> <td>    0.035</td> <td>   34.380</td> <td> 0.000</td> <td>    1.138</td> <td>    1.276</td>
+  <th>Male</th>               <td>    1.2069</td> <td>    0.035</td> <td>   34.380</td> <td> 0.000</td> <td>    1.138</td> <td>    1.276</td>
 </tr>
 <tr>
-  <th>Age</th>                           <td>    0.0387</td> <td>    0.001</td> <td>   38.530</td> <td> 0.000</td> <td>    0.037</td> <td>    0.041</td>
+  <th>Age</th>                <td>    0.0387</td> <td>    0.001</td> <td>   38.530</td> <td> 0.000</td> <td>    0.037</td> <td>    0.041</td>
 </tr>
 </table>
 
@@ -334,13 +440,13 @@ np.exp(result.params)
 
 
 
-    Intercept                        0.011977
-    C(Race)[T.Asian-Pac-Islander]    2.715861
-    C(Race)[T.Black]                 1.198638
-    C(Race)[T.Other]                 0.891987
-    C(Race)[T.White]                 2.396965
-    C(Sex)[T.Male]                   3.343142
-    Age                              1.039480
+    const                 0.011977
+    Asian-Pac-Islander    2.715861
+    Black                 1.198638
+    Other                 0.891987
+    White                 2.396965
+    Male                  3.343142
+    Age                   1.039480
     dtype: float64
 
 
@@ -354,13 +460,18 @@ model_log = logreg.fit(X, y.iloc[:,1])
 model_log
 ```
 
+    /anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+      FutureWarning)
+
+
 
 
 
     LogisticRegression(C=1000000000000000.0, class_weight=None, dual=False,
-              fit_intercept=False, intercept_scaling=1, max_iter=100,
-              multi_class='ovr', n_jobs=1, penalty='l2', random_state=None,
-              solver='liblinear', tol=0.0001, verbose=0, warm_start=False)
+                       fit_intercept=False, intercept_scaling=1, l1_ratio=None,
+                       max_iter=100, multi_class='warn', n_jobs=None, penalty='l2',
+                       random_state=None, solver='warn', tol=0.0001, verbose=0,
+                       warm_start=False)
 
 
 
