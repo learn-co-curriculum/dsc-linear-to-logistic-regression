@@ -345,11 +345,9 @@ For this example, let's fit a logistic regression model to `Target` using `Age`,
 
 
 ```python
-# Convert race and sex using get_dummies and concatenate with age
-cols = ["Race", "Sex"]
-X = pd.concat([pd.get_dummies(salaries[col], drop_first=True, dtype=float) for col in cols] 
-              + [salaries["Age"]], axis=1)
-
+# Convert race and sex using get_dummies
+x_feats = ["Race", "Sex", "Age"]
+X = pd.get_dummies(salaries[x_feats], drop_first=True, dtype=float)
 # Convert target using get dummies
 y = pd.get_dummies(salaries["Target"], dtype=float)
 ```
@@ -394,7 +392,7 @@ result.summary()
   <th>Date:</th>          <td>Wed, 24 Jul 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>              <td>15:20:20</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>              <td>17:55:38</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
   <th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
@@ -405,28 +403,28 @@ result.summary()
 </table>
 <table class="simpletable">
 <tr>
-           <td></td>             <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P>|z|</th>  <th>[0.025</th>    <th>0.975]</th>  
+             <td></td>                <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P>|z|</th>  <th>[0.025</th>    <th>0.975]</th>  
 </tr>
 <tr>
-  <th>const</th>              <td>   -4.4248</td> <td>    0.189</td> <td>  -23.380</td> <td> 0.000</td> <td>   -4.796</td> <td>   -4.054</td>
+  <th>const</th>                   <td>   -4.4248</td> <td>    0.189</td> <td>  -23.380</td> <td> 0.000</td> <td>   -4.796</td> <td>   -4.054</td>
 </tr>
 <tr>
-  <th>Asian-Pac-Islander</th> <td>    0.9991</td> <td>    0.197</td> <td>    5.079</td> <td> 0.000</td> <td>    0.614</td> <td>    1.385</td>
+  <th>Age</th>                     <td>    0.0387</td> <td>    0.001</td> <td>   38.530</td> <td> 0.000</td> <td>    0.037</td> <td>    0.041</td>
 </tr>
 <tr>
-  <th>Black</th>              <td>    0.1812</td> <td>    0.191</td> <td>    0.950</td> <td> 0.342</td> <td>   -0.193</td> <td>    0.555</td>
+  <th>Race_Asian-Pac-Islander</th> <td>    0.9991</td> <td>    0.197</td> <td>    5.079</td> <td> 0.000</td> <td>    0.614</td> <td>    1.385</td>
 </tr>
 <tr>
-  <th>Other</th>              <td>   -0.1143</td> <td>    0.282</td> <td>   -0.406</td> <td> 0.685</td> <td>   -0.667</td> <td>    0.438</td>
+  <th>Race_Black</th>              <td>    0.1812</td> <td>    0.191</td> <td>    0.950</td> <td> 0.342</td> <td>   -0.193</td> <td>    0.555</td>
 </tr>
 <tr>
-  <th>White</th>              <td>    0.8742</td> <td>    0.183</td> <td>    4.782</td> <td> 0.000</td> <td>    0.516</td> <td>    1.232</td>
+  <th>Race_Other</th>              <td>   -0.1143</td> <td>    0.282</td> <td>   -0.406</td> <td> 0.685</td> <td>   -0.667</td> <td>    0.438</td>
 </tr>
 <tr>
-  <th>Male</th>               <td>    1.2069</td> <td>    0.035</td> <td>   34.380</td> <td> 0.000</td> <td>    1.138</td> <td>    1.276</td>
+  <th>Race_White</th>              <td>    0.8742</td> <td>    0.183</td> <td>    4.782</td> <td> 0.000</td> <td>    0.516</td> <td>    1.232</td>
 </tr>
 <tr>
-  <th>Age</th>                <td>    0.0387</td> <td>    0.001</td> <td>   38.530</td> <td> 0.000</td> <td>    0.037</td> <td>    0.041</td>
+  <th>Sex_Male</th>                <td>    1.2069</td> <td>    0.035</td> <td>   34.380</td> <td> 0.000</td> <td>    1.138</td> <td>    1.276</td>
 </tr>
 </table>
 
@@ -437,20 +435,6 @@ result.summary()
 np.exp(result.params)
 ```
 
-
-
-
-    const                 0.011977
-    Asian-Pac-Islander    2.715861
-    Black                 1.198638
-    Other                 0.891987
-    White                 2.396965
-    Male                  3.343142
-    Age                   1.039480
-    dtype: float64
-
-
-
 You can also use scikit learn to retrieve the parameter estimates. The disadvantage here though is that there are no p-values for your parameter estimates!
 
 
@@ -460,33 +444,10 @@ model_log = logreg.fit(X, y.iloc[:,1])
 model_log
 ```
 
-    /anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
-      FutureWarning)
-
-
-
-
-
-    LogisticRegression(C=1000000000000000.0, class_weight=None, dual=False,
-                       fit_intercept=False, intercept_scaling=1, l1_ratio=None,
-                       max_iter=100, multi_class='warn', n_jobs=None, penalty='l2',
-                       random_state=None, solver='warn', tol=0.0001, verbose=0,
-                       warm_start=False)
-
-
-
 
 ```python
 model_log.coef_
 ```
-
-
-
-
-    array([[-4.38706343,  0.96178902,  0.14397983, -0.14384057,  0.83689457,
-             1.2067121 ,  0.03871011]])
-
-
 
 ## Summary 
 
