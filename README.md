@@ -392,7 +392,7 @@ result.summary()
   <th>Date:</th>          <td>Wed, 24 Jul 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>              <td>17:55:38</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>              <td>18:34:58</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
   <th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
@@ -435,6 +435,20 @@ result.summary()
 np.exp(result.params)
 ```
 
+
+
+
+    const                      0.011977
+    Age                        1.039480
+    Race_Asian-Pac-Islander    2.715861
+    Race_Black                 1.198638
+    Race_Other                 0.891987
+    Race_White                 2.396965
+    Sex_Male                   3.343142
+    dtype: float64
+
+
+
 You can also use scikit learn to retrieve the parameter estimates. The disadvantage here though is that there are no p-values for your parameter estimates!
 
 
@@ -444,10 +458,33 @@ model_log = logreg.fit(X, y.iloc[:,1])
 model_log
 ```
 
+    /anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
+      FutureWarning)
+
+
+
+
+
+    LogisticRegression(C=1000000000000000.0, class_weight=None, dual=False,
+                       fit_intercept=False, intercept_scaling=1, l1_ratio=None,
+                       max_iter=100, multi_class='warn', n_jobs=None, penalty='l2',
+                       random_state=None, solver='warn', tol=0.0001, verbose=0,
+                       warm_start=False)
+
+
+
 
 ```python
 model_log.coef_
 ```
+
+
+
+
+    array([[-4.38706342,  0.03871011,  0.96178902,  0.14397983, -0.14384057,
+             0.83689457,  1.2067121 ]])
+
+
 
 ## Summary 
 
