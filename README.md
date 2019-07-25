@@ -13,7 +13,7 @@ You will be able to:
 
 ## Recap of the linear regression model
 
-You have previously learned about linear regression models. In these models, you are trying to fit a linear relationship between two variables. An example is given below. In this example, we want to find a relationship between age and monthly income. It is definitely reasonable to assume that, on average, older people have a higher income than younger people who are newer to the job market and have less experience. A potential relationship could look like the plot below. The monthly income is shown in 1000 USD.
+You have previously learned about linear regression models. In these models, you are trying to fit a linear relationship between two variables. An example is given below. In this example, you want to find a relationship between age and monthly income. It is definitely reasonable to assume that, on average, older people have a higher income than younger people who are newer to the job market and have less experience. A potential relationship could look like the plot below. The monthly income is shown in 1000 USD.
 
 
 ```python
@@ -74,7 +74,7 @@ print(income_bin)
      0 1 0 0 0 0 1 1 1 1 1 0 1 1 1 0 0 1 0 1 0 0 1 1 0 1]
 
 
-Let's have a look at what happens when we plot this.
+Have a look at what happens when you plot this.
 
 
 ```python
@@ -90,7 +90,7 @@ plt.show()
 ![png](index_files/index_11_0.png)
 
 
-You can already tell that fitting a straight line will not be exactly desired here, but let's still have a look at what happens when you fit a regression line to these data. 
+You can already tell that fitting a straight line will not be exactly desired here. Take a look at what happens when you fit a regression line to these data. 
 
 
 ```python
@@ -122,19 +122,17 @@ plt.show()
 ![png](index_files/index_14_0.png)
 
 
-You can see that this doesn't make a lot of sense. This straight line cannot grasp the true structure of what is going on when using a linear regression model. Now, without going into the mathematical details for now, let's look at a logistic regression model and fit that to the dataset.
+You can see that this doesn't make a lot of sense. This straight line cannot grasp the true structure of what is going on when using a linear regression model. Now, without going into the mathematical details for now, look at a logistic regression model and fit that to the dataset.
 
 
 ```python
-# Create logistic regression object
-regr = LogisticRegression(C=1e5)
-# Train the model using the training sets
+# create logistic regression object
+# solver must be specified to avoid warning, see documentation for more information
+# liblinear was the default solver for previous version of scikit-learn
+regr = LogisticRegression(C=1e5, solver='liblinear')
+# train the model using the training sets
 regr.fit(age, income_bin)
 ```
-
-    /anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
-      FutureWarning)
-
 
 
 
@@ -142,7 +140,7 @@ regr.fit(age, income_bin)
     LogisticRegression(C=100000.0, class_weight=None, dual=False,
                        fit_intercept=True, intercept_scaling=1, l1_ratio=None,
                        max_iter=100, multi_class='warn', n_jobs=None, penalty='l2',
-                       random_state=None, solver='warn', tol=0.0001, verbose=0,
+                       random_state=None, solver='liblinear', tol=0.0001, verbose=0,
                        warm_start=False)
 
 
@@ -156,7 +154,7 @@ interc = regr.intercept_
 lin_pred= (age * coef + interc)
 # perform the log transformation
 mod_income = 1 / (1 + np.exp(-lin_pred))
-#sort the numbers to make sure plot looks right
+# sort the numbers to make sure plot looks right
 age_ordered, mod_income_ordered = zip(*sorted(zip(age ,mod_income.ravel()),key=lambda x: x[0]))
 ```
 
@@ -237,7 +235,7 @@ In our example, there is a positive relationship between age and income, this wi
 
 # A real data example
 
-Now let's apply what we've learned to a real data example. 
+Now you will apply what you have learned to an example using real data.
 
 
 ```python
@@ -341,14 +339,15 @@ salaries.head()
 
 
 
-For this example, let's fit a logistic regression model to `Target` using `Age`, `Race`, and `Sex`. Since `Target`, `Race`, and `Sex` are categorical, they need to be be converted to a numeric data type first.
+For this example, you will fit a logistic regression model to `Target` using `Age`, `Race`, and `Sex`. Since `Target`, `Race`, and `Sex` are categorical, they need to be be converted to a numeric data type first.
 
 
 ```python
-# Convert race and sex using get_dummies
+# convert race and sex using get_dummies 
+# age will be ignored by get_dummies because it is numeric, see documentation for more information
 x_feats = ["Race", "Sex", "Age"]
 X = pd.get_dummies(salaries[x_feats], drop_first=True, dtype=float)
-# Convert target using get dummies
+# Convert target using get_dummies
 y = pd.get_dummies(salaries["Target"], dtype=float)
 ```
 
@@ -356,11 +355,11 @@ y = pd.get_dummies(salaries["Target"], dtype=float)
 ```python
 import statsmodels.api as sm
 
-# Create intercept term required for sm.Logit, see documentation for more information
+# create intercept term required for sm.Logit, see documentation for more information
 X = sm.add_constant(X)
-# Fit model
+# fit model
 logit_model = sm.Logit(y.iloc[:,1], X)
-# Get results of the fit
+# get results of the fit
 result = logit_model.fit()
 ```
 
@@ -389,10 +388,10 @@ result.summary()
   <th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>  <td>     6</td> 
 </tr>
 <tr>
-  <th>Date:</th>          <td>Wed, 24 Jul 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
+  <th>Date:</th>          <td>Thu, 25 Jul 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>              <td>18:34:58</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>              <td>17:50:09</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
   <th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
@@ -453,14 +452,10 @@ You can also use scikit learn to retrieve the parameter estimates. The disadvant
 
 
 ```python
-logreg = LogisticRegression(fit_intercept = False, C = 1e15)
+logreg = LogisticRegression(fit_intercept = False, C = 1e15, solver='liblinear')
 model_log = logreg.fit(X, y.iloc[:,1])
 model_log
 ```
-
-    /anaconda3/envs/learn-env/lib/python3.6/site-packages/sklearn/linear_model/logistic.py:432: FutureWarning: Default solver will be changed to 'lbfgs' in 0.22. Specify a solver to silence this warning.
-      FutureWarning)
-
 
 
 
@@ -468,7 +463,7 @@ model_log
     LogisticRegression(C=1000000000000000.0, class_weight=None, dual=False,
                        fit_intercept=False, intercept_scaling=1, l1_ratio=None,
                        max_iter=100, multi_class='warn', n_jobs=None, penalty='l2',
-                       random_state=None, solver='warn', tol=0.0001, verbose=0,
+                       random_state=None, solver='liblinear', tol=0.0001, verbose=0,
                        warm_start=False)
 
 
