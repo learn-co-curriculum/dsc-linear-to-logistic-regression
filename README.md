@@ -347,7 +347,7 @@ For this example, you will fit a logistic regression model to `Target` using `Ag
 # age will be ignored by get_dummies because it is numeric, see documentation for more information
 x_feats = ["Race", "Sex", "Age"]
 X = pd.get_dummies(salaries[x_feats], drop_first=True, dtype=float)
-# Convert target using get_dummies
+# convert target using get_dummies
 y = pd.get_dummies(salaries["Target"], dtype=float)
 ```
 
@@ -391,7 +391,7 @@ result.summary()
   <th>Date:</th>          <td>Thu, 25 Jul 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>              <td>17:50:09</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>              <td>17:57:43</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
   <th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
