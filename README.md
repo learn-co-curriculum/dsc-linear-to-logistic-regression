@@ -343,7 +343,9 @@ salaries.head()
 
 
 
-For this example, you will fit a logistic regression model to `Target` using `Age`, `Race`, and `Sex`. Since `Target`, `Race`, and `Sex` are categorical, they need to be be converted to a numeric datatype first.
+For this example, you will fit a logistic regression model to `Target` using `Age`, `Race`, and `Sex`. Since `Target`, `Race`, and `Sex` are categorical, they need to be be converted to a numeric datatype first. 
+
+The `get_dummies()` function will only convert `object` and `category` datatypes to dummy variables so it is safe to pass `Age` to `get_dummies()`. Note that we also pass two additional arguments, `drop_first=True` and `dtype=float`. The `drop_first=True` argument removes the first level for each categorical variable and the `dtype=float` argument converts the datatype of all the dummy variables to float. The data must be float in order to obtain accurate statistical results from `statsmodels`. 
 
 
 ```python
@@ -352,7 +354,8 @@ x_feats = ['Race', 'Sex', 'Age']
 X = pd.get_dummies(salaries[x_feats], drop_first=True, dtype=float)
 
 # Convert target using get_dummies
-y = pd.get_dummies(salaries['Target'], dtype=float)
+y = pd.get_dummies(salaries['Target'], drop_first=True, dtype=float)
+y = y['>50K']
 ```
 
 
@@ -363,7 +366,7 @@ import statsmodels.api as sm
 X = sm.add_constant(X)
 
 # Fit model
-logit_model = sm.Logit(y.iloc[:,1], X)
+logit_model = sm.Logit(y, X)
 
 # Get results of the fit
 result = logit_model.fit()
@@ -401,7 +404,7 @@ result.summary()
   <th>Date:</th>            <td>Wed, 20 Nov 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>                <td>14:33:47</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>                <td>14:55:31</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
   <th>converged:</th>             <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
@@ -463,7 +466,7 @@ You can also use scikit-learn to retrieve the parameter estimates. The disadvant
 
 ```python
 logreg = LogisticRegression(fit_intercept = False, C = 1e15, solver='liblinear')
-model_log = logreg.fit(X, y.iloc[:,1])
+model_log = logreg.fit(X, y)
 model_log
 ```
 
