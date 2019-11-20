@@ -2,24 +2,26 @@
 # Linear to Logistic regression
 
 ## Introduction
-In this lecture, you'll be introduced to the logistic regression model. You'll start with an introductory example using linear regression, which you've seen before, to act as a segue into logistic regression. After that, you'll go into the more formal notation of logistic regression models. Then, you'll conclude this lecture by looking at a real data example.
+
+In this lesson, you'll be introduced to the logistic regression model. You'll start with an introductory example using linear regression, which you've seen before, to act as a segue into logistic regression. After that, you'll learn about the formal notation of logistic regression models. Then, you'll conclude this lesson by looking at a real-world example.
 
 ## Objectives
 
 You will be able to:
+
 * Describe the need for logistic regression
-* Describe the mathematics behind logistic regression
 * Interpret the parameters of a logistic regression model
 
 ## Recap of the linear regression model
 
-You have previously learned about linear regression models. In these models, you are trying to fit a linear relationship between two variables. An example is given below. In this example, you want to find a relationship between age and monthly income. It is reasonable to assume that, on average, older people have a higher income than younger people who are newer to the job market and have less experience. A potential relationship could look like the plot below. The monthly income is shown in 1000 USD.
+You have previously learned about linear regression models. In these models, you are trying to fit a linear relationship between two variables. An example is given below. In this example, you want to find a relationship between age and monthly income. It is reasonable to assume that, on average, older people have a higher income than younger people who are newer to the job market and have less experience. A potential relationship could look like the plot below. The monthly income is shown in 1000s of USD.
 
 
 ```python
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+%matplotlib inline
 
 np.random.seed(1234)
 
@@ -30,25 +32,25 @@ age = age.reshape(-1,1)
 fig = plt.figure(figsize=(8,6))
 fig.suptitle('age vs income', fontsize=16)
 plt.scatter(age, income)
-plt.xlabel("age", fontsize=14)
-plt.ylabel("monthly income", fontsize=14)
+plt.xlabel('age', fontsize=14)
+plt.ylabel('monthly income', fontsize=14)
 plt.show()
 ```
 
 
-    <Figure size 800x600 with 1 Axes>
+![png](index_files/index_3_0.png)
 
 
 In linear regression, you would try to find a relationship between age and monthly income. Conceptually, this means fitting a line that represents the relationship between age and monthly income, as shown below.
 
 
 ```python
-fig = plt.figure(figsize=(8,6))
+fig = plt.figure(figsize=(8, 6))
 fig.suptitle('linear regression', fontsize=16)
 plt.scatter(age, income)
-plt.plot(age, age/10, c = "black")
-plt.xlabel("age", fontsize=14)
-plt.ylabel("monthly income", fontsize=14)
+plt.plot(age, age/10, c='black')
+plt.xlabel('age', fontsize=14)
+plt.ylabel('monthly income', fontsize=14)
 plt.show()
 ```
 
@@ -60,12 +62,12 @@ The idea is that you could use this line to make predictions in the future. In t
 
 ## So how is this related to logistic regression?
 
-Now, imagine you get a data set where no information on exact income is given (after all, people don't like to talk about how much they earn!), but you only have information on whether or not they earn more than 4000 USD per month. Starting from the generated data we used before, the new variable `income_bin` was transformed to 1 when someone's income is over 4000 USD, and 0 when the income is less than 4000 USD.
+Now, imagine you get a dataset where no information on exact income is given (after all, people don't like to talk about how much they earn!), but you only have information on whether or not they earn more than 4000 USD per month. Starting from the generated data we used before, the new variable `income_bin` was transformed to 1 when someone's income is over 4000 USD, and 0 when the income is less than 4000 USD.
 
 
 ```python
 income_bin = income > 4
-income_bin =income_bin.astype(int)  
+income_bin = income_bin.astype(int)  
 print(income_bin)
 ```
 
@@ -78,11 +80,11 @@ Have a look at what happens when you plot this.
 
 
 ```python
-fig = plt.figure(figsize=(8,6))
+fig = plt.figure(figsize=(8, 6))
 fig.suptitle('age vs binary income', fontsize=16)
 plt.scatter(age, income_bin)
-plt.xlabel("age", fontsize=14)
-plt.ylabel("monthly income (> or < 4000)", fontsize=14)
+plt.xlabel('age', fontsize=14)
+plt.ylabel('monthly income (> or < 4000)', fontsize=14)
 plt.show()
 ```
 
@@ -90,31 +92,31 @@ plt.show()
 ![png](index_files/index_11_0.png)
 
 
-You can already tell that fitting a straight line will not be exactly desired here. Take a look at what happens when you fit a regression line to these data. 
+You can already tell that fitting a straight line will not work here. Take a look at what happens when you fit a regression line to these data. 
 
 
 ```python
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import LinearRegression
 
-# create linear regression object
+# Create linear regression model
 lin_reg = LinearRegression()
 lin_reg.fit(age, income_bin)
-# store the coefficients
+# Store the coefficients
 coef = lin_reg.coef_
 interc = lin_reg.intercept_
-# create the line
+# Create the line
 lin_income = (interc + age * coef)
 ```
 
 
 ```python
-fig = plt.figure(figsize=(8,6))
+fig = plt.figure(figsize=(8, 6))
 fig.suptitle('linear regression', fontsize=16)
 plt.scatter(age, income_bin)
-plt.xlabel("age", fontsize=14)
-plt.ylabel("monthly income", fontsize=14)
-plt.plot(age, lin_income, c = "black")
+plt.xlabel('age', fontsize=14)
+plt.ylabel('monthly income', fontsize=14)
+plt.plot(age, lin_income, c='black')
 plt.show()
 ```
 
@@ -126,11 +128,13 @@ You can see that this doesn't make a lot of sense. This straight line cannot gra
 
 
 ```python
-# create logistic regression object
-# solver must be specified to avoid warning, see documentation for more information
-# liblinear was the default solver for previous version of scikit-learn
+# Instantiate a Logistic regression model
+# Solver must be specified to avoid warning, see documentation for more information
+# liblinear is recommended for small datasets
+# https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
 regr = LogisticRegression(C=1e5, solver='liblinear')
-# train the model using the training sets
+
+# Fit the model to the training set
 regr.fit(age, income_bin)
 ```
 
@@ -147,25 +151,28 @@ regr.fit(age, income_bin)
 
 
 ```python
-# store the coefficients
+# Store the coefficients
 coef = regr.coef_
 interc = regr.intercept_
-# create the linear predictor
-lin_pred= (age * coef + interc)
-# perform the log transformation
+
+# Create the linear predictor
+lin_pred = (age * coef + interc)
+
+# Perform the log transformation
 mod_income = 1 / (1 + np.exp(-lin_pred))
-# sort the numbers to make sure plot looks right
+
+# Sort the numbers to make sure plot looks right
 age_ordered, mod_income_ordered = zip(*sorted(zip(age ,mod_income.ravel()),key=lambda x: x[0]))
 ```
 
 
 ```python
-fig = plt.figure(figsize=(8,6))
+fig = plt.figure(figsize=(8, 6))
 fig.suptitle('logistic regression', fontsize=16)
 plt.scatter(age, income_bin)
-plt.xlabel("age", fontsize=14)
-plt.ylabel("monthly income", fontsize=14)
-plt.plot(age_ordered, mod_income_ordered, c = "black")
+plt.xlabel('age', fontsize=14)
+plt.ylabel('monthly income', fontsize=14)
+plt.plot(age_ordered, mod_income_ordered, c='black')
 plt.show()
 ```
 
@@ -181,15 +188,15 @@ This already looks a lot better! You can see that this function has an S-shape w
 
 As you might remember from the linear regression lesson, a linear regression model can be written as:
 
-$$ \hat y = \hat\beta_0 + \hat\beta_1 x_1 + \hat\beta_2, x_2 +\ldots + \beta_n x_n $$
+$$ \hat y = \hat\beta_0 + \hat\beta_1 x_1 + \hat\beta_2 x_2 +\ldots + \beta_n x_n $$
 
-When there are $n$ predictors $x_1,\ldots,x_n$ and $n+1$ parameter estimates that are estimated by the model $\hat\beta_0, \hat\beta_1,\ldots, \hat\beta_n$. $ \hat y $ is an estimator for the outcome variable.
+When there are $n$ predictors $x_1,\ldots,x_n$ and $n+1$ parameter estimates that are estimated by the model $\hat\beta_0, \hat\beta_1,\ldots, \hat\beta_n$.  $ \hat y $ is an estimator for the outcome variable.
 
 Translating this model formulation to our example, this boils down to:
 
 $$ \text{income} = \beta_0 + \beta_1 \text{age} $$
 
-When you want to apply this to a binary dataset, what you actually want to do is perform a **classification** of your data in one group versus another one. In our case, we want to classify our observations (the 100 people in our data set) as good as possible in "earns more than 4k" and "earns less than 4k". A model will have to guess what the **probability** is of belonging to one group versus another. And that is exactly what logistic regression models can do! 
+When you want to apply this to a binary dataset, what you actually want to do is perform a **classification** of your data in one group versus another one. In our case, we want to classify our observations (the 100 people in our dataset) as good as possible in "earns more than 4k" and "earns less than 4k". A model will have to guess what the **probability** is of belonging to one group versus another. And that is exactly what logistic regression models can do! 
 
 Essentially, what happens is, the linear regression is *transformed* in a way that the outcome takes a value between 0 and 1. This can then be interpreted as a probability (e.g., 0.2 is a probability of 20%). Applied to our example, the expression for a logistic regression model would look like this:
 
@@ -197,10 +204,7 @@ $$ P(\text{income} > 4000) = \displaystyle \frac{1}{1+e^{-(\hat \beta_0+\hat \be
 
 Note that the outcome is written as $P(\text{income} > 4000)$. This means that the output should be interpreted as *the probability that the monthly income is over 4000 USD*.
 
-It is important to note that this is the case because the income variable was relabeled to be equal to 1 when the income is bigger than 4000, and 0 when smaller than 4000. In other words, The outcome variable should be interpreted as *the probability of the class label to be equal to 1*.
-
-
-
+It is important to note that this is the case because the income variable was relabeled to be equal to 1 when the income is bigger than 4000, and 0 when smaller than 4000. In other words, the outcome variable should be interpreted as *the probability of the class label to be equal to 1*.
 
 ### Interpretation
 
@@ -233,9 +237,9 @@ In our example, there is a positive relationship between age and income, this wi
 
 
 
-# A real data example
+# A real-world example
 
-Now you will apply what you have learned to an example using real data.
+Now you will apply these concepts to a real-world dataset: 
 
 
 ```python
@@ -248,7 +252,7 @@ from scipy import stats
 
 
 ```python
-salaries = pd.read_csv("salaries_final.csv", index_col = 0)
+salaries = pd.read_csv('salaries_final.csv', index_col=0)
 salaries.head()
 ```
 
@@ -339,33 +343,39 @@ salaries.head()
 
 
 
-For this example, you will fit a logistic regression model to `Target` using `Age`, `Race`, and `Sex`. Since `Target`, `Race`, and `Sex` are categorical, they need to be be converted to a numeric data type first.
+For this example, you will fit a logistic regression model to `Target` using `Age`, `Race`, and `Sex`. Since `Target`, `Race`, and `Sex` are categorical, they need to be be converted to a numeric datatype first.
 
 
 ```python
-# convert race and sex using get_dummies 
-# age will be ignored by get_dummies because it is numeric, see documentation for more information
-x_feats = ["Race", "Sex", "Age"]
+# Convert race and sex using get_dummies() 
+x_feats = ['Race', 'Sex', 'Age']
 X = pd.get_dummies(salaries[x_feats], drop_first=True, dtype=float)
-# convert target using get_dummies
-y = pd.get_dummies(salaries["Target"], dtype=float)
+
+# Convert target using get_dummies
+y = pd.get_dummies(salaries['Target'], dtype=float)
 ```
 
 
 ```python
 import statsmodels.api as sm
 
-# create intercept term required for sm.Logit, see documentation for more information
+# Create intercept term required for sm.Logit, see documentation for more information
 X = sm.add_constant(X)
-# fit model
+
+# Fit model
 logit_model = sm.Logit(y.iloc[:,1], X)
-# get results of the fit
+
+# Get results of the fit
 result = logit_model.fit()
 ```
 
     Optimization terminated successfully.
              Current function value: 0.498651
              Iterations 6
+
+
+    //anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py:2389: FutureWarning: Method .ptp is deprecated and will be removed in a future version. Use numpy.ptp instead.
+      return ptp(axis=axis, out=out, **kwargs)
 
 
 
@@ -379,25 +389,25 @@ result.summary()
 <table class="simpletable">
 <caption>Logit Regression Results</caption>
 <tr>
-  <th>Dep. Variable:</th>       <td>>50K</td>       <th>  No. Observations:  </th>  <td> 32561</td> 
+  <th>Dep. Variable:</th>         <td>>50K</td>       <th>  No. Observations:  </th>  <td> 32561</td> 
 </tr>
 <tr>
-  <th>Model:</th>               <td>Logit</td>      <th>  Df Residuals:      </th>  <td> 32554</td> 
+  <th>Model:</th>                 <td>Logit</td>      <th>  Df Residuals:      </th>  <td> 32554</td> 
 </tr>
 <tr>
-  <th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>  <td>     6</td> 
+  <th>Method:</th>                 <td>MLE</td>       <th>  Df Model:          </th>  <td>     6</td> 
 </tr>
 <tr>
-  <th>Date:</th>          <td>Thu, 25 Jul 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
+  <th>Date:</th>            <td>Wed, 20 Nov 2019</td> <th>  Pseudo R-squ.:     </th>  <td>0.09666</td>
 </tr>
 <tr>
-  <th>Time:</th>              <td>17:57:43</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
+  <th>Time:</th>                <td>14:33:47</td>     <th>  Log-Likelihood:    </th> <td> -16237.</td>
 </tr>
 <tr>
-  <th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
+  <th>converged:</th>             <td>True</td>       <th>  LL-Null:           </th> <td> -17974.</td>
 </tr>
 <tr>
-  <th> </th>                      <td> </td>        <th>  LLR p-value:       </th>  <td> 0.000</td> 
+  <th>Covariance Type:</th>     <td>nonrobust</td>    <th>  LLR p-value:       </th>  <td> 0.000</td> 
 </tr>
 </table>
 <table class="simpletable">
@@ -448,7 +458,7 @@ np.exp(result.params)
 
 
 
-You can also use scikit learn to retrieve the parameter estimates. The disadvantage here though is that there are no p-values for your parameter estimates!
+You can also use scikit-learn to retrieve the parameter estimates. The disadvantage here though is that there are no p-values for your parameter estimates!
 
 
 ```python
@@ -483,4 +493,4 @@ model_log.coef_
 
 ## Summary 
 
-In this lab you built upon your previous knowledge of linear regression and built an intuitive understanding of how this could be adapted for classification. We then demonstrated tools for performing logistic regression and briefly analyzed their output. In the upcoming lessons you will continue to investigate logistic regression from other viewpoints.
+In this lab you built upon your previous knowledge of linear regression and built an intuitive understanding of how this could be adapted for classification. We then demonstrated tools for performing logistic regression. In the upcoming lessons you will continue to investigate logistic regression from other viewpoints.
