@@ -10,7 +10,6 @@ In this lesson, you'll be introduced to the logistic regression model. You'll st
 You will be able to:
 
 * Describe the need for logistic regression
-* Describe the mathematics behind logistic regression
 * Interpret the parameters of a logistic regression model
 
 ## Recap of the linear regression model
